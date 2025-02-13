@@ -1,0 +1,26 @@
+﻿services:
+  api:
+    build:
+      context: .
+      dockerfile: Datum.Blog.Api/Dockerfile
+    ports:
+      - "5000:5000"      
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=localhost;Database=datum;Username=admin;Password=teste@123
+    depends_on:
+      - postgresdb
+
+  postgresdb:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: teste@123
+      POSTGRES_DB: datum
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
