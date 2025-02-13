@@ -2,13 +2,10 @@
 
 namespace Datum.Blog.Application.DTOs;
 
-public class PostDto
+public class UpdatPostDto
 {
-    public Guid Id { get; set; }
     public string? Titulo { get; set; } 
     public string? Conteudo { get; set; }
     public Guid AutorId { get; set; }
-    public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
-    public DateTime? UltimaAtualizacao { get; set; }
     public bool Publicado { get; set; }
 }

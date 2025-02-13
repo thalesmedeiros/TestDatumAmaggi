@@ -75,14 +75,10 @@ public class PostController : ControllerBase
     /// <param name="request">O objeto contendo os dados atualizados da postagem.</param>
     /// <returns>Um <see cref="IActionResult" /> indicando o resultado da operação de atualização.</returns>
     [HttpPut("[action]/{id:guid}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] PostDto request)
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdatPostDto request)
     {
-        if (id != request.Id)
-        {
-            return BadRequest("O ID na URL deve corresponder ao ID no corpo da requisição.");
-        }
 
-        var command = new UpdatePostCommand(request.Titulo, request.Conteudo, request.Publicado, id);
+        var command = new UpdatePostCommand(request.Titulo, request.Conteudo, request.Publicado, id, request.AutorId);
         var result = await _mediator.Send(command);
 
         return result ? Accepted() : NotFound();
