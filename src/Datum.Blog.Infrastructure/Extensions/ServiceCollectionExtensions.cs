@@ -5,6 +5,8 @@ using Datum.Blog.Domain.Interfaces;
 using Datum.Blog.Infrastructure.Persistence;
 using Datum.Blog.Infrastructure.Repositories;
 using Datum.Blog.Infrastructure.Service;
+using Datum.Blog.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace Datum.Blog.Infrastructure.Extensions;
 
@@ -29,6 +31,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPostRepository, PostRepository>();
 
         services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
+        services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
         return services;
     }

@@ -42,6 +42,21 @@ public class UserService : IUserService
         return null;
     }
 
+    public async Task<UserDto?> GetByEmailAsync(string email)
+    {
+        _logger.LogInformation("Getting User with ID: {UserId}", email);
+
+        var user = await _repository.GetByEmailAsync(email);
+        if (user is not null)
+        {
+            return _mapper.Map<UserDto>(user);
+        }
+
+        _logger.LogWarning("User with ID: {UserId} not found", email);
+
+        return null;
+    }
+
     public async Task<Guid> AddAsync(UserDto data)
     {
         _logger.LogInformation("Adding new User");
