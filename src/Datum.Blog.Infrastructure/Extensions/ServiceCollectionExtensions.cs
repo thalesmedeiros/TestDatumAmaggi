@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Datum.Blog.Domain.Interfaces;
 using Datum.Blog.Infrastructure.Persistence;
 using Datum.Blog.Infrastructure.Repositories;
+using Datum.Blog.Infrastructure.Service;
 
 namespace Datum.Blog.Infrastructure.Extensions;
 
@@ -26,6 +27,8 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPostRepository, PostRepository>();
+
+        services.AddScoped<INotificationService, NotificationService>();
 
         return services;
     }
