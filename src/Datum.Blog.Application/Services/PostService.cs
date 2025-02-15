@@ -67,9 +67,8 @@ public class PostService : IPostService
         _logger.LogInformation("Updating Post with ID: {PostId}", data.Id);
 
         var post = await _repository.GetByIdAsync(data.Id);
-        if (post is null)
+        if (post == null || post.AutorId != data.AutorId) 
         {
-            _logger.LogWarning("Post with ID: {PostId} not found. Update aborted", data.Id);
             return false;
         }
 

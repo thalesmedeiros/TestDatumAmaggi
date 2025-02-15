@@ -4,6 +4,7 @@ using Datum.Blog.Application.Queries.Post;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Datum.Blog.Api.Controllers;
 
@@ -80,6 +81,13 @@ public class PostController : ControllerBase
     [HttpPut("[action]/{id:guid}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdatPostDto request)
     {
+        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier!));
+
+        var post = await _mediator.Send(new GetByIdPostQuery(id));
+        if (post is null || post.AutorId != userId)
+        {
+            return Unauthorized("Você não pode excluir esta postagem.");
+        }
 
         var command = new UpdatePostCommand(request.Titulo, request.Conteudo, request.Publicado, id, request.AutorId);
         var result = await _mediator.Send(command);
