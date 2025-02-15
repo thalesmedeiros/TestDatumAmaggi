@@ -7,6 +7,7 @@ using Datum.Blog.Infrastructure.Repositories;
 using Datum.Blog.Infrastructure.Service;
 using Datum.Blog.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Datum.Blog.Infrastructure.Authentication;
 
 namespace Datum.Blog.Infrastructure.Extensions;
 
@@ -33,6 +34,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+        services.AddScoped<JwtService>(provider =>
+    new JwtService(configuration["Jwt:SecretKey"]!));
 
         return services;
     }

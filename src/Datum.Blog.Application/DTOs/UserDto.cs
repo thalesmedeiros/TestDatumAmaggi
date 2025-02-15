@@ -1,6 +1,4 @@
-﻿using Datum.Blog.Domain.Entities;
-
-namespace Datum.Blog.Application.DTOs;
+﻿namespace Datum.Blog.Application.DTOs;
 
 public class UserDto
 {

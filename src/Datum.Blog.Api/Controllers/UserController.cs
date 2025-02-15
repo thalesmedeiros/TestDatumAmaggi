@@ -2,6 +2,7 @@
 using Datum.Blog.Application.DTOs;
 using Datum.Blog.Application.Queries.User;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Datum.Blog.Api.Controllers;
@@ -11,6 +12,7 @@ namespace Datum.Blog.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("[controller]")]
+[Authorize]
 public class UserController : ControllerBase
 {
     private readonly IMediator _mediator;

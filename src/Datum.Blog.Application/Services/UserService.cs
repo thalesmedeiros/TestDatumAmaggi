@@ -4,6 +4,8 @@ using Datum.Blog.Application.DTOs;
 using Datum.Blog.Application.Interfaces;
 using Datum.Blog.Domain.Entities;
 using Datum.Blog.Domain.Interfaces;
+using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace Datum.Blog.Application.Services;
 
@@ -12,12 +14,14 @@ public class UserService : IUserService
     private readonly ILogger<UserService> _logger;
     private readonly IMapper _mapper;
     private readonly IUserRepository _repository;
+    private readonly IPasswordHasher<User> _passwordHasher;
 
-    public UserService(IUserRepository repository, IMapper mapper, ILogger<UserService> logger)
+    public UserService(IUserRepository repository, IMapper mapper, ILogger<UserService> logger, IPasswordHasher<User> passwordHasher)
     {
         _repository = repository;
         _mapper = mapper;
         _logger = logger;
+        _passwordHasher = passwordHasher;
     }
 
     public async Task<IEnumerable<UserDto>> GetAllAsync()
@@ -63,6 +67,8 @@ public class UserService : IUserService
 
         var user = _mapper.Map<User>(data);
         user.DataCriacao = DateTime.UtcNow;
+        user.Id = Guid.NewGuid();
+        user.SenhaHash = _passwordHasher.HashPassword(null!, data.SenhaHash!);
         await _repository.AddAsync(user);
 
         _logger.LogInformation("User added successfully with ID: {UserId}", user.Id);

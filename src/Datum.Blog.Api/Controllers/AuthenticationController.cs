@@ -1,8 +1,6 @@
 ﻿using Datum.Blog.Application.DTOs;
 using Datum.Blog.Application.Interfaces;
-using Datum.Blog.Domain.Entities;
 using Datum.Blog.Domain.Interfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,12 +12,10 @@ namespace Datum.Blog.Api.Controllers
     {
         private readonly IAuthenticationService _authenticationService;
         private readonly IUserService _userService;
-        private readonly IPasswordHasher<User> _passwordHasher;
 
-        public AuthenticationController(IAuthenticationService authenticationService, IPasswordHasher<User> passwordHasher,IUserService userService)
+        public AuthenticationController(IAuthenticationService authenticationService,IUserService userService)
         {
             _authenticationService = authenticationService;
-            _passwordHasher = passwordHasher;
             _userService = userService;
         }
 
@@ -48,7 +44,7 @@ namespace Datum.Blog.Api.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest, [FromBody] string nome)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest, string nome)
         {
             if (registerRequest == null || string.IsNullOrEmpty(registerRequest.Email) || string.IsNullOrEmpty(registerRequest.Password) || string.IsNullOrEmpty(nome))
             {
@@ -67,7 +63,7 @@ namespace Datum.Blog.Api.Controllers
                 {
                     Nome = nome,
                     Email = registerRequest.Email,
-                    SenhaHash = _passwordHasher.HashPassword(null, registerRequest.Password),
+                    SenhaHash =  registerRequest.Password,
                     DataCriacao = DateTime.UtcNow
                 };
 

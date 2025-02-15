@@ -26,9 +26,11 @@ namespace Datum.Blog.Application.Handlers.Auth
             var user = new UserDto
             {
                 Nome = request.Nome,
-                Email = request.Email,
-                SenhaHash = _passwordHasher.HashPassword(null!, request.Senha),
+                Email = request.Email
             };
+
+            // Corrigindo a chamada para HashPassword, passando o próprio objeto user.
+            user.SenhaHash = _passwordHasher.HashPassword(user, request.Senha);
 
             var createdUser = await _service.AddAsync(user);
             return createdUser;
