@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using Microsoft.Extensions.Logging;
 using Datum.Blog.Application.DTOs;
 using Datum.Blog.Application.Interfaces;
 using Datum.Blog.Domain.Entities;
 using Datum.Blog.Domain.Interfaces;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace Datum.Blog.Application.Services;
 
@@ -89,6 +88,7 @@ public class UserService : IUserService
 
         _mapper.Map(data, user);
         user.DataCriacao = DateTime.UtcNow;
+        user.SenhaHash = _passwordHasher.HashPassword(null!, data.SenhaHash!);
         await _repository.UpdateAsync(user);
 
         _logger.LogInformation("Task with ID: {TaskId} updated successfully", data.Id);
