@@ -46,7 +46,7 @@ namespace Datum.Blog.Infrastructure.Authentication
             {
                 ValidateAudience = false,
                 ValidateIssuer = false,
-                ValidateLifetime = false, // We are checking the expiration manually
+                ValidateLifetime = false,
                 IssuerSigningKey = new SymmetricSecurityKey(key)
             };
 

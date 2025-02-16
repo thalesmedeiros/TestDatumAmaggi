@@ -25,14 +25,14 @@ public class UserService : IUserService
 
     public async Task<IEnumerable<UserDto>> GetAllAsync()
     {
-        _logger.LogInformation("Getting all Users");
+        _logger.LogInformation("Obtendo todos os usuários");
         var people = await _repository.GetAllAsync();
         return _mapper.Map<IEnumerable<UserDto>>(people);
     }
 
     public async Task<UserDto?> GetByIdAsync(Guid id)
     {
-        _logger.LogInformation("Getting User with ID: {UserId}", id);
+        _logger.LogInformation("Obtendo usuário com ID: {UserId}", id);
 
         var user = await _repository.GetByIdAsync(id);
         if (user is not null)
@@ -40,14 +40,14 @@ public class UserService : IUserService
             return _mapper.Map<UserDto>(user);
         }
 
-        _logger.LogWarning("User with ID: {UserId} not found", id);
+        _logger.LogWarning("Usuário com ID: {UserId} não encontrado", id);
 
         return null;
     }
 
     public async Task<UserDto?> GetByEmailAsync(string email)
     {
-        _logger.LogInformation("Getting User with ID: {UserId}", email);
+        _logger.LogInformation("Obtendo usuário com email: {UserEmail}", email);
 
         var user = await _repository.GetByEmailAsync(email);
         if (user is not null)
@@ -55,14 +55,14 @@ public class UserService : IUserService
             return _mapper.Map<UserDto>(user);
         }
 
-        _logger.LogWarning("User with ID: {UserId} not found", email);
+        _logger.LogWarning("Usuário com email: {UserEmail} não encontrado", email);
 
         return null;
     }
 
     public async Task<Guid> AddAsync(UserDto data)
     {
-        _logger.LogInformation("Adding new User");
+        _logger.LogInformation("Adicionando novo usuário");
 
         var user = _mapper.Map<User>(data);
         user.DataCriacao = DateTime.UtcNow;
@@ -70,19 +70,19 @@ public class UserService : IUserService
         user.SenhaHash = _passwordHasher.HashPassword(null!, data.SenhaHash!);
         await _repository.AddAsync(user);
 
-        _logger.LogInformation("User added successfully with ID: {UserId}", user.Id);
+        _logger.LogInformation("Usuário adicionado com sucesso com ID: {UserId}", user.Id);
 
         return user.Id;
     }
 
     public async Task<bool> UpdateAsync(UserDto data)
     {
-        _logger.LogInformation("Updating Task with ID: {TaskId}", data.Id);
+        _logger.LogInformation("Atualizando usuário com ID: {UserId}", data.Id);
 
         var user = await _repository.GetByIdAsync(data.Id);
         if (user is null)
         {
-            _logger.LogWarning("Task with ID: {TaskId} not found. Update aborted", data.Id);
+            _logger.LogWarning("Usuário com ID: {UserId} não encontrado. Atualização abortada", data.Id);
             return false;
         }
 
@@ -91,25 +91,25 @@ public class UserService : IUserService
         user.SenhaHash = _passwordHasher.HashPassword(null!, data.SenhaHash!);
         await _repository.UpdateAsync(user);
 
-        _logger.LogInformation("Task with ID: {TaskId} updated successfully", data.Id);
+        _logger.LogInformation("Usuário com ID: {UserId} atualizado com sucesso", data.Id);
 
         return true;
     }
 
     public async Task<bool> DeleteAsync(Guid id)
     {
-        _logger.LogInformation("Deleting Task with ID: {TaskId}", id);
+        _logger.LogInformation("Deletando usuário com ID: {UserId}", id);
 
         var user = await _repository.GetByIdAsync(id);
         if (user is null)
         {
-            _logger.LogWarning("Task with ID: {TaskId} not found. Deletion aborted", id);
+            _logger.LogWarning("Usuário com ID: {UserId} não encontrado. Deleção abortada", id);
             return false;
         }
 
         await _repository.DeleteAsync(id);
 
-        _logger.LogInformation("Task with ID: {TaskId} deleted successfully", id);
+        _logger.LogInformation("Usuário com ID: {UserId} deletado com sucesso", id);
 
         return true;
     }

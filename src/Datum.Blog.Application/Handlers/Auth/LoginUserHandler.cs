@@ -24,7 +24,7 @@ namespace Datum.Blog.Application.Handlers
             catch (UnauthorizedAccessException)
             {
                
-                return new LoginUserResponse(null); // Ou você pode lançar uma exceção personalizada, dependendo da sua necessidade
+                return new LoginUserResponse(null!); 
             }
         }
     }

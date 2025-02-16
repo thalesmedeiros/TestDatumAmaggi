@@ -7,5 +7,4 @@ public class UserDto
     public string? Email { get; set; }
     public string? SenhaHash { get; set; } 
     public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
-    //public ICollection<Post> Posts { get; set; } = new List<Post>();
 }
