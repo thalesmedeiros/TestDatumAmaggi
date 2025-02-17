@@ -19,10 +19,4 @@
         <ProjectReference Include="..\Datum.Blog.Domain\Datum.Blog.Domain.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Commands\User\" />
-      <Folder Include="Handlers\User\" />
-      <Folder Include="Queries\User\" />
-    </ItemGroup>
-
 </Project>

@@ -1,18 +1,18 @@
 # Datum.Blog.Api
 
 ## Visão Geral
-Datum.Blog.Api é um projeto de CRUD em .NET 8 que segue a arquitetura limpa (Clean Architecture) e o padrão CQRS utilizando o MediatR. Este projeto utiliza um único banco de dados com a tabela `Lista de Tarefas`, além de incluir testes de unidade para garantir a qualidade e as melhores práticas do código.
+Datum.Blog.Api é um projeto de CRUD em .NET 8 que segue a arquitetura limpa (Clean Architecture) e o padrão CQRS utilizando o MediatR. Este projeto permite o registro, login de usuários, bem como o gerenciamento de postagens (criação, atualização, exclusão) e a visualização das postagens existentes. Ele utiliza o banco de dados PostgreSQL e oferece autenticação baseada em JWT.
 
 ### Tecnologias e Ferramentas Utilizadas
-- .NET 8
-- Docker & Docker Compose
-- Clean Architecture
-- CQRS com MediatR
-- Swagger para documentação de API
-- xUnit, FluentAssertions e Moq para testes
-- Integração contínua e entrega contínua (CI/CD) com GitHub Actions
-- Controle de versão com Git
-
+- **.NET 8**
+- **Docker & Docker Compose**
+- **Clean Architecture**
+- **CQRS com MediatR**
+- **Swagger** para documentação de API
+- **JWT** para autenticação
+- **xUnit**, **FluentAssertions** e **Moq** para testes
+- **Integração contínua e entrega contínua (CI/CD)** com **GitHub Actions**
+- **Controle de versão** com **Git**
 
 ## Estrutura do Projeto
 
@@ -21,7 +21,84 @@ A estrutura do projeto segue a organização em camadas para manter a separaçã
 - **Datum.Blog.Api**: Contém os controladores de API e a configuração de endpoints.
 - **Datum.Blog.Application**: Contém os serviços e casos de uso da aplicação, utilizando MediatR para consultas e comandos.
 - **Datum.Blog.Domain**: Define as entidades, interfaces e lógica de domínio.
-- **Datum.Blog.Infrastructure**: Implementa os repositórios e o acesso a dados.
+- **Datum.Blog.Infrastructure**: Implementa os repositórios, acesso a dados e serviços de autenticação.
+
+## Funcionalidades
+
+### Autenticação de Usuário
+- **Login**: Permite que os usuários façam login usando suas credenciais (email e senha), retornando um token JWT para autenticação subsequente.
+- **Registro**: Permite que novos usuários se registrem fornecendo um nome, email e senha.
+
+### Gerenciamento de Postagens
+- **Criar Postagens**: Usuários autenticados podem criar novas postagens, fornecendo título, conteúdo e autor.
+- **Atualizar Postagens**: Usuários autenticados podem editar suas próprias postagens.
+- **Excluir Postagens**: Usuários autenticados podem excluir postagens existentes.
+- **Visualização de Postagens**: Qualquer visitante pode visualizar postagens existentes.
+
+### Controladores
+
+#### **AuthenticationController**
+- **Login**
+  - **POST** `/api/authentication/login`
+  - Recebe um `LoginRequest` (email e senha) e retorna um token JWT caso as credenciais sejam válidas.
+  - **Response**: `200 OK` com o token JWT ou `401 Unauthorized` para credenciais inválidas.
+
+- **Register**
+  - **POST** `/api/authentication/register`
+  - Recebe um `RegisterRequest` com nome, email e senha, criando um novo usuário.
+  - **Response**: `200 OK` com uma mensagem de sucesso ou `400 BadRequest` para dados inválidos.
+
+#### **PostController**
+- **GetById**
+  - **GET** `/post/get/{id:guid}`
+  - Recupera uma postagem específica pelo ID.
+  - **Response**: `200 OK` com os dados da postagem ou `404 NotFound` se a postagem não for encontrada.
+
+- **GetAll**
+  - **GET** `/post/get/all`
+  - Recupera todas as postagens.
+  - **Response**: `200 OK` com uma lista de postagens.
+
+- **Add**
+  - **POST** `/post/add`
+  - Cria uma nova postagem.
+  - **Response**: `201 Created` com o ID da nova postagem.
+
+- **Update**
+  - **PUT** `/post/update/{id:guid}`
+  - Atualiza uma postagem existente.
+  - **Response**: `202 Accepted` se a postagem for atualizada ou `404 NotFound` se a postagem não for encontrada.
+
+- **Delete**
+  - **DELETE** `/post/delete/{id:guid}`
+  - Exclui uma postagem existente.
+  - **Response**: `202 Accepted` se a postagem for excluída ou `404 NotFound` se a postagem não for encontrada.
+
+#### **UserController**
+- **GetById**
+  - **GET** `/user/get/{id:guid}`
+  - Recupera os dados de um usuário específico.
+  - **Response**: `200 OK` com os dados do usuário ou `404 NotFound` se o usuário não for encontrado.
+
+- **GetAll**
+  - **GET** `/user/get/all`
+  - Recupera todos os usuários.
+  - **Response**: `200 OK` com uma lista de usuários.
+
+- **Add**
+  - **POST** `/user/add`
+  - Cria um novo usuário.
+  - **Response**: `201 Created` com o ID do novo usuário.
+
+- **Update**
+  - **PUT** `/user/update/{id:guid}`
+  - Atualiza os dados de um usuário.
+  - **Response**: `202 Accepted` se o usuário for atualizado ou `404 NotFound` se o usuário não for encontrado.
+
+- **Delete**
+  - **DELETE** `/user/delete/{id:guid}`
+  - Exclui um usuário existente.
+  - **Response**: `202 Accepted` se o usuário for excluído ou `404 NotFound` se o usuário não for encontrado.
 
 ## Configuração de Injeção de Dependência
 
@@ -140,11 +217,6 @@ ENTRYPOINT ["dotnet", "Datum.Blog.Api.dll"]
 
 A aplicação estará disponível em `http://localhost:5000`.
 
-
-### Deletar Pessoa
-
-- **DELETE** `/person/delete/{id:guid}`
-- **Response**: `202 Accepted` se a deleção for bem-sucedida ou `404 Not Found` se a pessoa não for encontrada.
 
 ### Logging
 

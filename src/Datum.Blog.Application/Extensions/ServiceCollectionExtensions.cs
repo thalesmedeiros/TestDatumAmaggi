@@ -2,6 +2,8 @@
 using Datum.Blog.Application.Interfaces;
 using Datum.Blog.Application.Mapping;
 using Datum.Blog.Application.Services;
+using Datum.Blog.Application.DTOs;
+using Microsoft.AspNetCore.Identity;
 
 namespace Datum.Blog.Application.Extensions;
 
@@ -23,6 +25,9 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IPostService, PostService>();
         services.AddScoped<IUserService, UserService>();
+
+        services.AddScoped<IPasswordHasher<UserDto>, PasswordHasher<UserDto>>();
+
         return services;
     }
 }

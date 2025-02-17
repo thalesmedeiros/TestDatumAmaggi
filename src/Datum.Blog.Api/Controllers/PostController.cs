@@ -2,7 +2,9 @@
 using Datum.Blog.Application.DTOs;
 using Datum.Blog.Application.Queries.Post;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Datum.Blog.Api.Controllers;
 
@@ -60,6 +62,7 @@ public class PostController : ControllerBase
     /// </summary>
     /// <param name="request">O objeto contendo os detalhes da postagem.</param>
     /// <returns>Uma resposta 201 Created com a localização da nova postagem.</returns>
+    [Authorize]
     [HttpPost("[action]")]
     public async Task<IActionResult> Add([FromBody] PostDto request)
     {
@@ -74,15 +77,19 @@ public class PostController : ControllerBase
     /// <param name="id">O identificador único da postagem.</param>
     /// <param name="request">O objeto contendo os dados atualizados da postagem.</param>
     /// <returns>Um <see cref="IActionResult" /> indicando o resultado da operação de atualização.</returns>
+    [Authorize]
     [HttpPut("[action]/{id:guid}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] PostDto request)
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdatPostDto request)
     {
-        if (id != request.Id)
+        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier!));
+
+        var post = await _mediator.Send(new GetByIdPostQuery(id));
+        if (post is null || post.AutorId != userId)
         {
-            return BadRequest("O ID na URL deve corresponder ao ID no corpo da requisição.");
+            return Unauthorized("Você não pode excluir esta postagem.");
         }
 
-        var command = new UpdatePostCommand(request.Titulo, request.Conteudo, request.Publicado, id);
+        var command = new UpdatePostCommand(request.Titulo, request.Conteudo, request.Publicado, id, request.AutorId);
         var result = await _mediator.Send(command);
 
         return result ? Accepted() : NotFound();
@@ -93,6 +100,7 @@ public class PostController : ControllerBase
     /// </summary>
     /// <param name="id">O identificador único da postagem a ser excluída.</param>
     /// <returns>Um <see cref="IActionResult" /> indicando o resultado da operação de exclusão.</returns>
+    [Authorize]
     [HttpDelete("[action]/{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
     {
