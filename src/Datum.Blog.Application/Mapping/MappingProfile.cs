@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Datum.Blog.Application.Commands.Post;
+using Datum.Blog.Application.Commands.User;
 using Datum.Blog.Application.DTOs;
 using Datum.Blog.Domain.Entities;
 
@@ -11,6 +12,10 @@ public class MappingProfile : Profile
     {
         CreateMap<Post, PostDto>().ReverseMap();
         CreateMap<CreatePostCommand, PostDto>();
-        CreateMap<UpdatePostCommand, PostDto>(); 
+        CreateMap<UpdatePostCommand, PostDto>();
+
+        CreateMap<User, UserDto>().ReverseMap();
+        CreateMap<CreateUserCommand, UserDto>();
+        CreateMap<UpdateUserCommand, UserDto>();
     }
 }

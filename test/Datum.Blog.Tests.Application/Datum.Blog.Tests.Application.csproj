@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -20,6 +20,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\Datum.Blog.Application\Datum.Blog.Application.csproj" />
+      <ProjectReference Include="..\..\src\Datum.Blog.Domain\Datum.Blog.Domain.csproj" />
+      <ProjectReference Include="..\..\src\Datum.Blog.Infrastructure\Datum.Blog.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
