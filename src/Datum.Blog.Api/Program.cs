@@ -30,28 +30,19 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngularApp", policy =>
     {
         policy.WithOrigins("http://localhost:4200")
-           .WithMethods("POST", "GET")
+           .WithMethods()
            .AllowAnyHeader()
            .AllowCredentials();
  
     });
 
-    options.AddPolicy("AllowAngularApp", policy =>
-    {
-        policy.AllowAnyOrigin()
-           .WithMethods("GET", "POST")
-           .AllowAnyHeader();
-    });
 });
 
 // Configuração de Roteamento
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 // Configuração do SignalR
-builder.Services.AddSignalR(options =>
-{
-    options.EnableDetailedErrors = true;
-}).AddJsonProtocol();
+builder.Services.AddSignalR();
 
 // Configuração do Swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -89,8 +80,6 @@ app.MapControllers();
 // Mapear o Hub SignalR
 app.MapHub<NotificationHub>("/notificationHub");
 
-
-app.UseWebSockets();
 
 // Iniciar a aplicação
 app.Run();
