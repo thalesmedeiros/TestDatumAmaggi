@@ -1,10 +1,13 @@
-using System.Text.Json.Serialization;
-using Serilog;
 using Datum.Blog.Application.Extensions;
+using Datum.Blog.Infrastructure.Configuration;
 using Datum.Blog.Infrastructure.Extensions;
+using Datum.Blog.Infrastructure.Notification;
+using Serilog;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configuração do Serilog
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .Enrich.FromLogContext()
@@ -12,38 +15,71 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
-// Add Logging
+// Configuração do Logging
 builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
 
-// Add Controllers
-builder.Services.AddControllers().AddJsonOptions(options => { options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull; });
+// Configuração do JSON
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+});
 
-// Add Routing
+// Configuração do CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+           .WithMethods()
+           .AllowAnyHeader()
+           .AllowCredentials();
+ 
+    });
+
+});
+
+// Configuração de Roteamento
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
-// Add Controllers
-builder.Services.AddControllers();
+// Configuração do SignalR
+builder.Services.AddSignalR();
+
+// Configuração do Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerConfiguration();
+
+// Configuração de Autenticação JWT
+builder.Services.AddJwtAuthentication(builder.Configuration);
+
+// Registro dos serviços da infraestrutura e aplicação
 builder.Services
     .AddInfrastructure(builder.Configuration)
     .AddApplication()
     .AddApplicationServices();
 
-// Build App
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
-//app.UseHttpsRedirection();
+// Configuração do pipeline de requisição
 app.UseSerilogRequestLogging();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Datum.Blog.Api");
-    c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
+    c.RoutePrefix = string.Empty;  // Definir o Swagger UI no root da aplicação
 });
-app.UseAuthorization();
-app.MapControllers();
-app.UseRouting();
 
+// Uso da autenticação e autorização
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Configuração do CORS
+app.UseCors("AllowAngularApp");
+
+app.MapControllers();
+
+// Mapear o Hub SignalR
+app.MapHub<NotificationHub>("/notificationHub");
+
+
+// Iniciar a aplicação
 app.Run();
